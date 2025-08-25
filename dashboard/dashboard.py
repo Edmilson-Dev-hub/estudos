@@ -1,0 +1,22 @@
+import streamlit as st
+import pandas as pd
+
+tabela = pd.read_excel("vendas.xlsx")
+
+#titulo
+
+st.title("Dashboard de vendas")
+
+# capo de seleção e filtro de dados
+regioes = st.multiselect("Selecione a região", tabela["Região"].unique())
+if regioes:
+    tabela = tabela[tabela["Região"].isin(regioes)]
+# 2 métricas 
+# faturamento total
+st.metric("Faturamento total", f"R${tabela['Valor Venda'].sum()}")
+# ticket médio
+st.metric("Ticket médio", f"R${tabela['Valor Venda'].mean()}")
+# gráfico faturamento por região
+st.bar_chart(tabela.groupby("Região")["Valor Venda"].sum())
+# gráfico faturamento por produto
+st.bar_chart(tabela.groupby("Produto")["Valor Venda"].sum())
